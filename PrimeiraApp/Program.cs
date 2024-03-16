@@ -16,10 +16,11 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();
+app.UseRouting(); //Uso de rotas
 
 app.UseAuthorization();
 
+//Deixa rota padrão por último quando se tem outras rotas
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
