@@ -1,3 +1,7 @@
 ﻿@using PrimeiraApp
 @using PrimeiraApp.Models
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@* Vai trazer tudo o que for de taghelper da aplicação, inclusive o que foi criado  *@
+@addTagHelper "*, PrimeiraApp" 
+
