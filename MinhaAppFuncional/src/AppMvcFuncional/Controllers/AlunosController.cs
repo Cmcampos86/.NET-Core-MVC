@@ -5,6 +5,7 @@ using AppMvcFuncional.Models;
 
 namespace AppMvcFuncional.Controllers
 {
+    [Route("meus-alunos")]
     public class AlunosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,14 +17,15 @@ namespace AppMvcFuncional.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return _context.Aluno != null ?
-                        View(await _context.Aluno.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Aluno'  is null.");
+              return _context.Aluno != null ? 
+                          View(await _context.Aluno.ToListAsync()) :
+                          Problem("Entity set 'ApplicationDbContext.Aluno'  is null.");
         }
 
-        public async Task<IActionResult> Details(int? id)
+        [Route("{id:int}/detalhes")]
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null || _context.Aluno == null)
+            if (_context.Aluno == null)
             {
                 return NotFound();
             }
@@ -39,12 +41,13 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
+        [Route("novo")]
         public IActionResult Create()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("novo")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,DataNascimento,Email,EmailConfirmacao,Avaliacao,Ativo")] Aluno aluno)
         {
@@ -57,9 +60,10 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        [Route("editar/{id:int}")]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Aluno == null)
+            if (_context.Aluno == null)
             {
                 return NotFound();
             }
@@ -72,7 +76,7 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        [HttpPost]
+        [HttpPost("editar/{id:int}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,DataNascimento,Email,Avaliacao,Ativo")] Aluno aluno)
         {
@@ -104,9 +108,10 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        [Route("excluir/{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.Aluno == null)
+            if (_context.Aluno == null)
             {
                 return NotFound();
             }
@@ -122,7 +127,8 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost("excluir/{id:int}")]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -135,14 +141,14 @@ namespace AppMvcFuncional.Controllers
             {
                 _context.Aluno.Remove(aluno);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AlunoExists(int id)
         {
-            return (_context.Aluno?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Aluno?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
