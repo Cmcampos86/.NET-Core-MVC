@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppMvcFuncional.Data;
 using AppMvcFuncional.Models;
@@ -19,22 +14,23 @@ namespace AppMvcFuncional.Controllers
             _context = context;
         }
 
-        // GET: Alunos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Aluno.ToListAsync());
+            return _context.Aluno != null ?
+                        View(await _context.Aluno.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.Aluno'  is null.");
         }
 
-        // GET: Alunos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Aluno == null)
             {
                 return NotFound();
             }
 
             var aluno = await _context.Aluno
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (aluno == null)
             {
                 return NotFound();
@@ -43,18 +39,14 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        // GET: Alunos/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Alunos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,DataNascimento,Email,Avaliacao,Ativo")] Aluno aluno)
+        public async Task<IActionResult> Create([Bind("Id,Nome,DataNascimento,Email,EmailConfirmacao,Avaliacao,Ativo")] Aluno aluno)
         {
             if (ModelState.IsValid)
             {
@@ -65,10 +57,9 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        // GET: Alunos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Aluno == null)
             {
                 return NotFound();
             }
@@ -81,9 +72,6 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        // POST: Alunos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,DataNascimento,Email,Avaliacao,Ativo")] Aluno aluno)
@@ -116,16 +104,16 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        // GET: Alunos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Aluno == null)
             {
                 return NotFound();
             }
 
             var aluno = await _context.Aluno
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (aluno == null)
             {
                 return NotFound();
@@ -134,11 +122,14 @@ namespace AppMvcFuncional.Controllers
             return View(aluno);
         }
 
-        // POST: Alunos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.Aluno == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Aluno'  is null.");
+            }
             var aluno = await _context.Aluno.FindAsync(id);
             if (aluno != null)
             {
@@ -151,7 +142,7 @@ namespace AppMvcFuncional.Controllers
 
         private bool AlunoExists(int id)
         {
-            return _context.Aluno.Any(e => e.Id == id);
+            return (_context.Aluno?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
