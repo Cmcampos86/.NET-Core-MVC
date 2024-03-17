@@ -9,5 +9,6 @@ namespace AppMvcFuncional.Data
             : base(options)
         {
         }
+        public DbSet<AppMvcFuncional.Models.Aluno> Aluno { get; set; }
     }
 }
