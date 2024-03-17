@@ -15,6 +15,7 @@ namespace AppMvcFuncional.Controllers
 
         public IActionResult Index()
         {
+            Console.WriteLine(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));//Informa o ambiente utilizado
             return View();
         }
 
